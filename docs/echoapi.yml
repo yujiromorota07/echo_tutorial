@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  description: echoを用いてAPIを作る練習
+  version: 1.0.0
+  title: EchoAPI
+
+tags:
+  - name: todo
+    description: todo周り
+  
+
+paths: 
+  "/todos":
+    get:
+      tags:
+        - todo
+      summary: todo一覧
+      description: ""
+      responses: 
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        "400":
+          description: Invalid status value
+
+  "/todo":
+    post:
+      tags:
+        - todo
+      summary: todoを追加します
+      description: ""
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTodo"
+      responses:
+        "200":
+          description: ""
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          description: ""
+
+components:
+  schemas:
+    Todo: 
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        content:
+          type: string
+      required:
+        - id
+        - title
+        - content
+    CreateTodo: 
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+      required:
+        - title
+        - content
+
+      
+
+
+
+

@@ -1,0 +1,2 @@
+oapi-codegen -include-tags todo -generate "types" -package todo echoapi.yml > "../api/generated/todo/types_todo.gen.go"
+oapi-codegen -include-tags todo -generate "server" -package todo echoapi.yml > "../api/generated/todo/servers_todo.gen.go"
