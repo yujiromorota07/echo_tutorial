@@ -1,0 +1,10 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile-dev
+    volumes:
+      - ./api:/go/src/api
+    ports:
+      - 1323:1323
+    tty: true

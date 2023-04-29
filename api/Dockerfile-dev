@@ -1,0 +1,4 @@
+FROM golang:1.19
+WORKDIR /go/src/api
+COPY . .
+# RUN chmod 777 /go/src/api/app_launch.sh
