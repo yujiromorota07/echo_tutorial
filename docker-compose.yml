@@ -5,8 +5,12 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - ./api:/go/src/api
+      - ./database:/go/src/database
+      - ./docs:/go/src/docs
     ports:
       - 1323:1323
+    networks:
+      - echo
     links:
       - db
     tty: true
@@ -20,6 +24,14 @@ services:
       MYSQL_USER: echo
       MYSQL_PASSWORD: echo
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./database/db:/db
     ports:
       - 3306:3306
+    networks:
+      - echo
+      
+networks:
+  echo:
+    driver: bridge
     
