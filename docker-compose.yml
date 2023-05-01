@@ -9,6 +9,11 @@ services:
       - ./docs:/go/src/docs
     ports:
       - 1323:1323
+    environment:
+      MYSQL_DATABASE: echodev
+      MYSQL_HOST: mysql_host  # 追加!!
+      MYSQL_USER: echo
+      MYSQL_PASSWORD: echo
     networks:
       - echo
     links:
@@ -16,7 +21,7 @@ services:
     tty: true
   
   db:
-    image: mysql:5.7
+    image: mysql/mysql-server:5.7.28
     container_name: mysql_host
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -26,11 +31,14 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
     volumes:
       - ./database/db:/db
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
     networks:
       - echo
-      
+
 networks:
   echo:
     driver: bridge

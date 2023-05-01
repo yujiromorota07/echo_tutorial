@@ -14,8 +14,8 @@ func NewTodoDatasource() dsmysql.TodoDatasource {
 }
 
 const (
-	querySelectTodos = ""
-	queryInsertTodo  = ""
+	querySelectTodos = "SELECT * FROM `todos`;"
+	queryInsertTodo  = "INSERT INTO todos(title, content) VALUES (?,?)"
 )
 
 func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
@@ -35,7 +35,7 @@ func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
 
 	for rows.Next() {
 		var r entity.Todo
-		err = rows.Scan(&r.ID, &r.Title, &r.Content)
+		err = rows.Scan(&r.ID, &r.Title, &r.Content, &r.CreatedAt, &r.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
