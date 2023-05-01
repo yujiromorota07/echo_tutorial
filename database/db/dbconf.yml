@@ -1,0 +1,3 @@
+development:
+  driver: mysql
+  open: echo:echo@tcp(mysql_host:3306)/echodev

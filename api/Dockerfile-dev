@@ -1,4 +1,30 @@
-FROM golang:1.19
+FROM golang:1.19-alpine
+
 WORKDIR /go/src/api
 COPY . .
-# RUN chmod 777 /go/src/api/app_launch.sh
+
+ENV GO111MODULE=on
+ENV GO_ENV=.env
+
+## libreoffice
+RUN apk update \
+    && apk add --upgrade --no-cache --virtual .libreoffice-rundeps \
+    libreoffice libreoffice-lang-ja
+
+# font
+RUN apk add --no-cache curl fontconfig &&\
+    curl -O https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00301.zip && \
+    mkdir -p /usr/share/fonts/ipa && \
+    mkdir -p /temp && \
+    unzip IPAexfont00301.zip -d /temp && \
+    cp /temp/IPAexfont00301/*.ttf /usr/share/fonts/ipa/ && \
+    rm IPAexfont00301.zip
+RUN rm -rf /temp && \
+    fc-cache -fv
+
+RUN apk add --no-cache git \
+    && apk add --no-cache gcc libc-dev \
+    && go get -u github.com/cosmtrek/air \
+    && go install bitbucket.org/liamstask/goose/cmd/goose@latest \
+    && go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.9.0 \
+    && go install github.com/google/wire/cmd/wire@v0.5.0
