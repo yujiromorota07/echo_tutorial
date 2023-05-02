@@ -16,6 +16,7 @@ func NewTodoDatasource() dsmysql.TodoDatasource {
 const (
 	querySelectTodos = "SELECT * FROM `todos`;"
 	queryInsertTodo  = "INSERT INTO todos(title, content) VALUES (?,?)"
+	queryUpdateTodo  = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
 )
 
 func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
@@ -63,4 +64,20 @@ func (ds todoDatasource) Insert(ctx context.Context, e entity.Todo) (entity.Todo
 	e.ID = uint32(id)
 
 	return e, err
+}
+
+func (ds todoDatasource) Update(ctx context.Context, e entity.Todo) error {
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(queryUpdateTodo)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.Title, e.Content, e.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

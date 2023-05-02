@@ -31,3 +31,12 @@ func (repo TodoRepository) CreateTodo(ctx context.Context, e entity.Todo) (entit
 	}
 	return todo, nil
 }
+
+func (repo TodoRepository) UpdateTodo(ctx context.Context, e entity.Todo) error {
+	err := repo.dsTodo.Update(ctx, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

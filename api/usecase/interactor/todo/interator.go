@@ -35,3 +35,13 @@ func (usecase TodoUsecase) CreateTodo(e entity.Todo) (entity.Todo, error) {
 	}
 	return todo, nil
 }
+
+func (usecase TodoUsecase) UpdateTodo(e entity.Todo) (entity.Todo, error) {
+	ctx := context.Background()
+	err := usecase.todoRepository.UpdateTodo(ctx, e)
+	if err != nil {
+		return entity.Todo{}, err
+	}
+
+	return e, nil
+}

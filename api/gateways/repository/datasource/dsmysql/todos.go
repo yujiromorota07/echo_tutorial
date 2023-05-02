@@ -8,4 +8,5 @@ import (
 type TodoDatasource interface {
 	Select(ctx context.Context) ([]entity.Todo, error)
 	Insert(ctx context.Context, e entity.Todo) (entity.Todo, error)
+	Update(ctx context.Context, e entity.Todo) error
 }
