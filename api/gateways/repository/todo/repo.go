@@ -24,11 +24,21 @@ func (repo TodoRepository) GetTodos(ctx context.Context) ([]entity.Todo, error) 
 	return todos, nil
 }
 
+func (repo TodoRepository) GetTodo(ctx context.Context, e entity.TodoID) (entity.Todo, error) {
+	todo, err := repo.dsTodo.SelectById(ctx, e)
+	if err != nil {
+		return entity.Todo{}, err
+	}
+
+	return todo, nil
+}
+
 func (repo TodoRepository) CreateTodo(ctx context.Context, e entity.Todo) (entity.Todo, error) {
 	todo, err := repo.dsTodo.Insert(ctx, e)
 	if err != nil {
 		return entity.Todo{}, err
 	}
+
 	return todo, nil
 }
 

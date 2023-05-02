@@ -27,6 +27,16 @@ func (usecase TodoUsecase) GetTodos() ([]entity.Todo, error) {
 	return todos, nil
 }
 
+func (usecase TodoUsecase) GetTodo(e entity.TodoID) (entity.Todo, error) {
+	ctx := context.Background()
+	todo, err := usecase.todoRepository.GetTodo(ctx, e)
+	if err != nil {
+		return entity.Todo{}, err
+	}
+
+	return todo, nil
+}
+
 func (usecase TodoUsecase) CreateTodo(e entity.Todo) (entity.Todo, error) {
 	ctx := context.Background()
 	todo, err := usecase.todoRepository.CreateTodo(ctx, e)

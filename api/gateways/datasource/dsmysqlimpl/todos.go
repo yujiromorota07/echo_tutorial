@@ -14,10 +14,11 @@ func NewTodoDatasource() dsmysql.TodoDatasource {
 }
 
 const (
-	querySelectTodos = "SELECT * FROM `todos`;"
-	queryInsertTodo  = "INSERT INTO todos(title, content) VALUES (?,?)"
-	queryUpdateTodo  = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
-	queryDeleteTodo  = "DELETE FROM `todos` WHERE `id`=?"
+	querySelectTodos    = "SELECT * FROM `todos`"
+	querySelectTodoByID = "SELECT * FROM `todos` WHERE `id`=?"
+	queryInsertTodo     = "INSERT INTO todos(title, content) VALUES (?,?)"
+	queryUpdateTodo     = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
+	queryDeleteTodo     = "DELETE FROM `todos` WHERE `id`=?"
 )
 
 func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
@@ -46,6 +47,23 @@ func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
 	defer rows.Close()
 
 	return res, nil
+}
+
+func (ds todoDatasource) SelectById(ctx context.Context, e entity.TodoID) (entity.Todo, error) {
+	var todo entity.Todo
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(querySelectTodoByID)
+	if err != nil {
+		return entity.Todo{}, err
+	}
+	defer stmt.Close()
+
+	result := stmt.QueryRow(e)
+	if getErr := result.Scan(&todo.ID, &todo.Title, &todo.Content, &todo.CreatedAt, &todo.UpdatedAt); getErr != nil {
+		return todo, getErr
+	}
+
+	return todo, nil
 }
 
 func (ds todoDatasource) Insert(ctx context.Context, e entity.Todo) (entity.Todo, error) {

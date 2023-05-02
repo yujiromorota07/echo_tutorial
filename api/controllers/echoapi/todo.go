@@ -67,7 +67,12 @@ func (ctrl TodoController) PutTodo(ctx echo.Context) error {
 }
 
 func (ctrl TodoController) GetTodosId(ctx echo.Context, id int32) error {
-	return nil
+	res, err := ctrl.todoUsecase.GetTodo(entity.TodoID(id))
+	if err != nil {
+		return presenter.ErrorResponse(ctx, http.StatusBadRequest, "todoの取得に失敗しました。")
+	}
+
+	return ctx.JSON(http.StatusOK, presenter.GetTodo(res))
 }
 
 func (ctrl TodoController) DeleteTodosId(ctx echo.Context, id int32) error {
