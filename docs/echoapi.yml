@@ -50,8 +50,95 @@ paths:
                 $ref: "#/components/schemas/Todo"
         "400":
           description: ""
+    put:
+      tags:
+        - todo
+      summary: todo編集します
+      description: ""
+      requestBody:
+        description: ""
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Todo"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400": 
+          description: ""
+
+  /todos/{id}:
+    get: 
+      tags:
+        - todo
+      summary: todo詳細を取得します。
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          description: todo id
+          required: true
+          schema: 
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: ""
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          description: ""
+
+    delete:
+      tags:
+        - todo
+      summary: todoを削除します。
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          description: todo id
+          required: true
+          schema: 
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: ""
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: ""
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+      security:
+        - Bearer: []
+
+      
+
+  
+
 
 components:
+  responses:
+    BadRequestError:
+      description: Bad request
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: Access authority is invalid
+    NotFoundError:
+      description: Not found data
+
   schemas:
     Todo: 
       properties:
@@ -75,6 +162,20 @@ components:
       required:
         - title
         - content
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - type
+        - message
 
       
 

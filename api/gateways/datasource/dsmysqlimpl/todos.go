@@ -14,8 +14,11 @@ func NewTodoDatasource() dsmysql.TodoDatasource {
 }
 
 const (
-	querySelectTodos = "SELECT * FROM `todos`;"
-	queryInsertTodo  = "INSERT INTO todos(title, content) VALUES (?,?)"
+	querySelectTodos    = "SELECT * FROM `todos`"
+	querySelectTodoByID = "SELECT * FROM `todos` WHERE `id`=?"
+	queryInsertTodo     = "INSERT INTO todos(title, content) VALUES (?,?)"
+	queryUpdateTodo     = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
+	queryDeleteTodo     = "DELETE FROM `todos` WHERE `id`=?"
 )
 
 func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
@@ -46,6 +49,23 @@ func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
 	return res, nil
 }
 
+func (ds todoDatasource) SelectById(ctx context.Context, e entity.TodoID) (entity.Todo, error) {
+	var todo entity.Todo
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(querySelectTodoByID)
+	if err != nil {
+		return entity.Todo{}, err
+	}
+	defer stmt.Close()
+
+	result := stmt.QueryRow(e)
+	if getErr := result.Scan(&todo.ID, &todo.Title, &todo.Content, &todo.CreatedAt, &todo.UpdatedAt); getErr != nil {
+		return todo, getErr
+	}
+
+	return todo, nil
+}
+
 func (ds todoDatasource) Insert(ctx context.Context, e entity.Todo) (entity.Todo, error) {
 	dao := inframysql.GetDao(ctx)
 	stmt, err := dao.Prepare(queryInsertTodo)
@@ -63,4 +83,37 @@ func (ds todoDatasource) Insert(ctx context.Context, e entity.Todo) (entity.Todo
 	e.ID = uint32(id)
 
 	return e, err
+}
+
+func (ds todoDatasource) Update(ctx context.Context, e entity.Todo) error {
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(queryUpdateTodo)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.Title, e.Content, e.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ds todoDatasource) Delete(ctx context.Context, e entity.TodoID) error {
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(queryDeleteTodo)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
