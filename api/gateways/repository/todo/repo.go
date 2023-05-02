@@ -40,3 +40,12 @@ func (repo TodoRepository) UpdateTodo(ctx context.Context, e entity.Todo) error 
 
 	return nil
 }
+
+func (repo TodoRepository) DeleteTodo(ctx context.Context, e entity.TodoID) error {
+	err := repo.dsTodo.Delete(ctx, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

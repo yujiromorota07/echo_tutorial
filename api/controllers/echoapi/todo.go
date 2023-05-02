@@ -71,5 +71,10 @@ func (ctrl TodoController) GetTodosId(ctx echo.Context, id int32) error {
 }
 
 func (ctrl TodoController) DeleteTodosId(ctx echo.Context, id int32) error {
-	return nil
+	err := ctrl.todoUsecase.DeleteTodo(entity.TodoID(id))
+	if err != nil {
+		return presenter.ErrorResponse(ctx, http.StatusBadRequest, "todoの削除に失敗しました。")
+	}
+
+	return presenter.SuccessResponse(ctx, "todoの削除に成功しました。")
 }

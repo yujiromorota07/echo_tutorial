@@ -17,6 +17,7 @@ const (
 	querySelectTodos = "SELECT * FROM `todos`;"
 	queryInsertTodo  = "INSERT INTO todos(title, content) VALUES (?,?)"
 	queryUpdateTodo  = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
+	queryDeleteTodo  = "DELETE FROM `todos` WHERE `id`=?"
 )
 
 func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
@@ -75,6 +76,23 @@ func (ds todoDatasource) Update(ctx context.Context, e entity.Todo) error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(e.Title, e.Content, e.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ds todoDatasource) Delete(ctx context.Context, e entity.TodoID) error {
+	dao := inframysql.GetDao(ctx)
+	stmt, err := dao.Prepare(queryDeleteTodo)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e)
 	if err != nil {
 		return err
 	}

@@ -33,6 +33,7 @@ func (usecase TodoUsecase) CreateTodo(e entity.Todo) (entity.Todo, error) {
 	if err != nil {
 		return entity.Todo{}, err
 	}
+
 	return todo, nil
 }
 
@@ -44,4 +45,14 @@ func (usecase TodoUsecase) UpdateTodo(e entity.Todo) (entity.Todo, error) {
 	}
 
 	return e, nil
+}
+
+func (usecase TodoUsecase) DeleteTodo(e entity.TodoID) error {
+	ctx := context.Background()
+	err := usecase.todoRepository.DeleteTodo(ctx, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
