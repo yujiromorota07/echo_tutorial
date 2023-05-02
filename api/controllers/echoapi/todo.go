@@ -46,3 +46,15 @@ func (ctrl TodoController) PostTodo(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, presenter.GetTodo(res))
 }
+
+func (ctrl TodoController) PutTodo(ctx echo.Context) error {
+	return nil
+}
+
+func (ctrl TodoController) GetTodosId(ctx echo.Context, id int32) error {
+	return nil
+}
+
+func (ctrl TodoController) DeleteTodosId(ctx echo.Context, id int32) error {
+	return nil
+}
