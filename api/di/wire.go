@@ -7,6 +7,7 @@ import (
 	echoAPICtrl "api/controllers/echoapi"
 	dsmysqlimpl "api/gateways/datasource/dsmysqlimpl"
 	todoRepository "api/gateways/repository/todo"
+	transaction "api/gateways/repository/transaction"
 	todo "api/generated/todo"
 	inputport "api/usecase/inputport"
 	todoUsecase "api/usecase/interactor/todo"
@@ -26,6 +27,7 @@ func IntializeTodoController() todo.ServerInterface {
 func IntializeTodoUsecase() inputport.Todo {
 	wire.Build(
 		todoUsecase.NewTodoUsecase,
+		InitializeTransactionRepository,
 		IntializeTodoRepository,
 	)
 	return todoUsecase.TodoUsecase{}
@@ -37,4 +39,11 @@ func IntializeTodoRepository() repository.TodoRepository {
 		dsmysqlimpl.NewTodoDatasource,
 	)
 	return todoRepository.TodoRepository{}
+}
+
+func InitializeTransactionRepository() repository.TransactionManager {
+	wire.Build(
+		transaction.NewTransactionManager,
+	)
+	return transaction.TransactionManager{}
 }
