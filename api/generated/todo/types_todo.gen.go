@@ -22,9 +22,10 @@ type CreateTodo struct {
 
 // Todo defines model for Todo.
 type Todo struct {
-	Content string `json:"content"`
-	Id      int32  `json:"id"`
-	Title   string `json:"title"`
+	Content    string `json:"content"`
+	Id         int32  `json:"id"`
+	StatusCode int    `json:"status_code"`
+	Title      string `json:"title"`
 }
 
 // PostTodoJSONBody defines parameters for PostTodo.

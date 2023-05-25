@@ -9,9 +9,10 @@ func GetTodos(e []entity.Todo) []todo.Todo {
 	res := make([]todo.Todo, 0)
 	for _, p := range e {
 		r := todo.Todo{
-			Id:      int32(p.ID),
-			Title:   p.Title,
-			Content: p.Content,
+			Id:         int32(p.ID),
+			Title:      p.Title,
+			Content:    p.Content,
+			StatusCode: int(p.StatusCode),
 		}
 		res = append(res, r)
 	}
@@ -20,8 +21,9 @@ func GetTodos(e []entity.Todo) []todo.Todo {
 
 func GetTodo(e entity.Todo) todo.Todo {
 	return todo.Todo{
-		Id:      int32(e.ID),
-		Title:   e.Title,
-		Content: e.Content,
+		Id:         int32(e.ID),
+		Title:      e.Title,
+		Content:    e.Content,
+		StatusCode: int(e.StatusCode),
 	}
 }

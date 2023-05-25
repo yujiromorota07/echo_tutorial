@@ -149,10 +149,13 @@ components:
           type: string
         content:
           type: string
+        status_code:
+          type: integer
       required:
         - id
         - title
         - content
+        - status_code
     CreateTodo: 
       properties:
         title:

@@ -55,15 +55,16 @@ func (ctrl TodoController) PutTodo(ctx echo.Context) error {
 	}
 
 	res, err := ctrl.todoUsecase.UpdateTodo(entity.Todo{
-		ID:      uint32(req.Id),
-		Title:   req.Title,
-		Content: req.Content,
+		ID:         uint32(req.Id),
+		Title:      req.Title,
+		Content:    req.Content,
+		StatusCode: uint32(req.StatusCode),
 	})
 	if err != nil {
 		return presenter.ErrorResponse(ctx, http.StatusBadRequest, "todoの編集に失敗しました。")
 	}
 
-	return ctx.JSON(http.StatusOK, res)
+	return ctx.JSON(http.StatusOK, presenter.GetTodo(res))
 }
 
 func (ctrl TodoController) GetTodosId(ctx echo.Context, id int32) error {

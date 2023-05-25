@@ -16,8 +16,8 @@ func NewTodoDatasource() dsmysql.TodoDatasource {
 const (
 	querySelectTodos    = "SELECT * FROM `todos`"
 	querySelectTodoByID = "SELECT * FROM `todos` WHERE `id`=?"
-	queryInsertTodo     = "INSERT INTO todos(title, content) VALUES (?,?)"
-	queryUpdateTodo     = "UPDATE `todos` SET `title`=?, `content`=? WHERE `id`=?"
+	queryInsertTodo     = "INSERT INTO todos(title, content, status_code) VALUES (?,?,1)"
+	queryUpdateTodo     = "UPDATE `todos` SET `title`=?, `content`=? ,`status_code`=? WHERE `id`=?"
 	queryDeleteTodo     = "DELETE FROM `todos` WHERE `id`=?"
 )
 
@@ -38,7 +38,7 @@ func (ds todoDatasource) Select(ctx context.Context) ([]entity.Todo, error) {
 
 	for rows.Next() {
 		var r entity.Todo
-		err = rows.Scan(&r.ID, &r.Title, &r.Content, &r.CreatedAt, &r.UpdatedAt)
+		err = rows.Scan(&r.ID, &r.Title, &r.Content, &r.StatusCode, &r.CreatedAt, &r.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -59,7 +59,7 @@ func (ds todoDatasource) SelectById(ctx context.Context, e entity.TodoID) (entit
 	defer stmt.Close()
 
 	result := stmt.QueryRow(e)
-	if getErr := result.Scan(&todo.ID, &todo.Title, &todo.Content, &todo.CreatedAt, &todo.UpdatedAt); getErr != nil {
+	if getErr := result.Scan(&todo.ID, &todo.Title, &todo.Content, &todo.StatusCode, &todo.CreatedAt, &todo.UpdatedAt); getErr != nil {
 		return todo, getErr
 	}
 
@@ -81,6 +81,7 @@ func (ds todoDatasource) Insert(ctx context.Context, e entity.Todo) (entity.Todo
 
 	id, _ := result.LastInsertId()
 	e.ID = uint32(id)
+	e.StatusCode = 1
 
 	return e, err
 }
@@ -93,7 +94,7 @@ func (ds todoDatasource) Update(ctx context.Context, e entity.Todo) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(e.Title, e.Content, e.ID)
+	_, err = stmt.Exec(e.Title, e.Content, e.StatusCode, e.ID)
 	if err != nil {
 		return err
 	}
