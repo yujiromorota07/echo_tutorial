@@ -11,7 +11,7 @@ services:
       - 1323:1323
     environment:
       MYSQL_DATABASE: echodev
-      MYSQL_HOST: mysql_host  # 追加!!
+      MYSQL_HOST: mysql_host
       MYSQL_USER: echo
       MYSQL_PASSWORD: echo
     networks:
@@ -21,7 +21,8 @@ services:
     tty: true
   
   db:
-    image: mysql/mysql-server:5.7.28
+    image: mysql:5.7
+    restart: always
     container_name: mysql_host
     environment:
       MYSQL_ROOT_PASSWORD: root
