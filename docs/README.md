@@ -1,1 +1,1 @@
-echo_tutorial
+インフラ周り勉強用
